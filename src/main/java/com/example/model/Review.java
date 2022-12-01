@@ -1,4 +1,4 @@
-package com.example.reviewc.model;
+package com.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.http.HttpEntity;

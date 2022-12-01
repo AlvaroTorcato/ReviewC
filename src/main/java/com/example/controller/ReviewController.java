@@ -1,10 +1,9 @@
-package com.example.reviewc.controller;
+package com.example.controller;
 
-import com.example.reviewc.model.AggregateRating;
-import com.example.reviewc.model.Review;
-import com.example.reviewc.model.ReviewDTO;
-import com.example.reviewc.model.ReviewDetailsDTO;
-import com.example.reviewc.service.ReviewService;
+import com.example.model.ReviewDTO;
+import com.example.model.Review;
+import com.example.model.ReviewDetailsDTO;
+import com.example.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

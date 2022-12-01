@@ -1,8 +1,8 @@
-package com.example.reviewc.service;
+package com.example.service;
 
-import com.example.reviewc.model.ReviewAPOD;
-import com.example.reviewc.model.ReviewDTO;
-import com.example.reviewc.model.UserDetailsDTO;
+import com.example.model.ReviewDTO;
+import com.example.model.UserDetailsDTO;
+import com.example.model.ReviewAPOD;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

@@ -1,4 +1,4 @@
-package com.example.reviewc.model;
+package com.example.model;
 
 public class ReviewDetailsDTO {
     private String text = "";

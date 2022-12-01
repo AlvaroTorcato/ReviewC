@@ -1,7 +1,7 @@
-package com.example.reviewc.service;
+package com.example.service;
 
-import com.example.reviewc.model.*;
-import com.example.reviewc.repository.ReviewRepository;
+import com.example.model.*;
+import com.example.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +22,9 @@ public class ReviewService {
     @Autowired
     private RequestService service;
 
+    @Autowired
+    RabbitMQSender rabbitMQSender;
+
     public ReviewDTO createReview(final ReviewDetailsDTO resource, String sku, HttpServletRequest request) throws IOException {
         int statusCode = getStatusCodeOfProduct(sku);
         if (statusCode == 404){
@@ -36,6 +39,7 @@ public class ReviewService {
         }
         Review review = new Review(resource.getText(), resource.getRating(),sku, user.getId());
         repository.save(review);
+        rabbitMQSender.send(review);
         ReviewDTO reviewDTO = new ReviewDTO(review);
         return reviewDTO;
     }
