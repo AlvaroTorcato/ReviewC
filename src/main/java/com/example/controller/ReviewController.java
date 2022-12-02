@@ -36,6 +36,11 @@ public class ReviewController {
         service.deleteById(id,request);
         return ResponseEntity.noContent().build();
     }
+    @Operation(summary = "Add vote to review")
+    @GetMapping(value = "/vote/{reviewId}/{string}")
+    ReviewDTO updateReviewWithVote(@PathVariable("reviewId") int reviewId,@PathVariable("string") String status){
+        return service.updateReviewWithVote(reviewId,status);
+    }
 
 
 

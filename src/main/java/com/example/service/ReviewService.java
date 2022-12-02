@@ -24,9 +24,11 @@ public class ReviewService {
 
     @Autowired
     RabbitMQSender rabbitMQSender;
+    @Autowired
+    private Client client;
 
     public ReviewDTO createReview(final ReviewDetailsDTO resource, String sku, HttpServletRequest request) throws IOException {
-        int statusCode = getStatusCodeOfProduct(sku);
+        /*int statusCode = getStatusCodeOfProduct(sku);
         if (statusCode == 404){
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found");
         }
@@ -37,26 +39,18 @@ public class ReviewService {
             System.out.println(user.getRoles());
             throw  new ResponseStatusException(HttpStatus.FORBIDDEN, "Can´t be accessed by this user");
         }
-        Review review = new Review(resource.getText(), resource.getRating(),sku, user.getId());
+        */
+        boolean n = client.send(sku);
+        if (n == false){
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found");
+        }
+        String jwt = service.parseJwt(request);
+        System.out.println(n);
+        Review review = new Review(resource.getText(), resource.getRating(),sku,1);//user.getId());
         repository.save(review);
         rabbitMQSender.send(review);
         ReviewDTO reviewDTO = new ReviewDTO(review);
         return reviewDTO;
-    }
-    public List<ReviewDTO> findAllReviewsPending(Integer pageNo, Integer pageSize,HttpServletRequest request) {
-        String jwt = service.parseJwt(request);
-        UserDetailsDTO user = service.makeRequestToAutentication(jwt);
-        if (!user.getRoles().equals("[MODERATOR]")){
-            throw  new ResponseStatusException(HttpStatus.FORBIDDEN, "Can´t be accessed by this user");
-        }
-        Pageable paging = PageRequest.of(pageNo, pageSize);
-        Page<ReviewDTO> review = repository.findAllPendingReviews(paging);
-        List<ReviewDTO> reviews = review.getContent();
-        /*if (reviews.isEmpty()){
-            reviews = service.
-        }
-        */
-        return reviews;
     }
     public ReviewDTO changeStatus(int idReview, ChangeStatus resource, HttpServletRequest request) {
         String jwt = service.parseJwt(request);
@@ -70,24 +64,7 @@ public class ReviewService {
         return reviewDTO;
     }
 
-    public List<ReviewDTO> findAllApprovedReviews(String sku,Integer pageNo,Integer pageSize) {
-        Pageable paging = PageRequest.of(pageNo, pageSize);
-        Page<ReviewDTO> review =  repository.findAllApprovedReviews(sku,paging);
-        List<ReviewDTO> reviews = review.getContent();
-        return reviews;
-    }
 
-    public List<ReviewDTO> findAllReviewsByUser(Integer pageNo,Integer pageSize, HttpServletRequest request ) {
-        String jwt = service.parseJwt(request);
-        UserDetailsDTO user = service.makeRequestToAutentication(jwt);
-        if (!user.getRoles().equals("[MODERATOR]") && !user.getRoles().equals("[COSTUMER]")){
-            throw  new ResponseStatusException(HttpStatus.FORBIDDEN, "Can´t be accessed by this user");
-        }
-        Pageable paging = PageRequest.of(pageNo, pageSize);
-        Page<ReviewDTO> review= repository.findAllReviewsByUser(user.getId(),paging);
-        List<ReviewDTO> reviews = review.getContent();
-        return reviews;
-    }
 
     public int getStatusCodeOfProduct(String sku){
         String urlRequest = "http://localhost:8081/products/" + sku;
@@ -95,22 +72,10 @@ public class ReviewService {
         return statusCode;
     }
 
-    public AggregateRating findAllRates(String sku) {
-        List<ReviewDTO> review= repository.findAllAprovedReviewsBySku(sku);
-        AggregateRating rating = new AggregateRating(review);
-        if (rating.getSku().equals("0")){
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Reviews Not Found");
-        }
-        return rating;
-    }
-
     public ReviewDTO findReviewById(int reviewId) {
         ReviewDTO review= repository.findReviewByIdAndApproved(reviewId);
         if (review == null){
-            review = service.retriveReviewFromApi(reviewId);
-            if (review == null){
-                throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found");
-            }
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found");
         }
         return review;
     }
@@ -154,12 +119,4 @@ public class ReviewService {
         return repository.findReviewByIdAndApproved(reviewId);
     }
 
-    public List<ReviewDTO> orderAllReviewsByVotes(String sku) {
-        int statusCode = getStatusCodeOfProduct(sku);
-        if (statusCode == 404){
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found");
-        }
-        List<ReviewDTO> reviewDTOS = repository.orderByVotes(sku);
-        return reviewDTOS;
-    }
 }

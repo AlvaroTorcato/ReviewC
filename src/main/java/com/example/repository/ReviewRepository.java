@@ -13,10 +13,10 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    @Query("select new com.example.reviewc.model.ReviewDTO(f) from Review f where f.status = 'PENDING'")
+    @Query("select new com.example.model.ReviewDTO(f) from Review f where f.status = 'PENDING'")
     Page<ReviewDTO> findAllPendingReviews(Pageable paging);
 
-    @Query("select new com.example.reviewc.model.ReviewDTO(f) from Review f where f.id = :idReview")
+    @Query("select new com.example.model.ReviewDTO(f) from Review f where f.id = :idReview")
     ReviewDTO findReviewById(@Param("idReview") int idReview);
 
     @Modifying
@@ -27,13 +27,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("select f from Review f where f.sku = :sku and f.status = 'APPROVED' order by f.creationDateTime desc ")
     Page<ReviewDTO> findAllApprovedReviews(@Param("sku") String sku, Pageable paging);
 
-    @Query("select new com.example.reviewc.model.ReviewDTO(f) from Review f where f.userid = :idUser")
+    @Query("select new com.example.model.ReviewDTO(f) from Review f where f.userid = :idUser")
     Page<ReviewDTO> findAllReviewsByUser(@Param("idUser") int idUser,Pageable paging);
 
-    @Query("select new com.example.reviewc.model.ReviewDTO(f) from Review f where f.sku = :sku and f.status = 'APPROVED'")
+    @Query("select new com.example.model.ReviewDTO(f) from Review f where f.sku = :sku and f.status = 'APPROVED'")
     List<ReviewDTO> findAllAprovedReviewsBySku(@Param("sku") String sku);
 
-    @Query("select new com.example.reviewc.model.ReviewDTO(f) from Review f where f.id = :reviewId and f.status = 'APPROVED'")
+    @Query("select new com.example.model.ReviewDTO(f) from Review f where f.id = :reviewId and f.status = 'APPROVED'")
     ReviewDTO findReviewByIdAndApproved(int reviewId);
     @Modifying
     @Query("delete from Review f where f.id = :idReview")
@@ -44,6 +44,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("update Review u set u.upVotes = :upVotes , u.downVotes= :downVotes , u.totalVotes = :totalVotes where u.id = :idReview")
     void updateReviewWithVote(@Param("idReview") int idReview, @Param("upVotes") int upVotes, @Param("downVotes") int downVotes, @Param("totalVotes") int totalVotes);
 
-    @Query("select new com.example.reviewc.model.ReviewDTO(f) from Review f where f.sku = :sku and f.status = 'APPROVED' order by f.upVotes desc ,f.creationDateTime desc ")
+    @Query("select new com.example.model.ReviewDTO(f) from Review f where f.sku = :sku and f.status = 'APPROVED' order by f.upVotes desc ,f.creationDateTime desc ")
     List<ReviewDTO> orderByVotes(String sku);
 }
