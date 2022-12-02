@@ -138,9 +138,15 @@ public class RabbitMQConfig {
 
     String reviewsUpdateExchange = "reviewsUpdate_exchange";
 
+    String reviewsVoteUpdate1Queue = "reviewsVoteUpdate1_queue_fanout";
+
+    //String products2Queue = "products2_queue_fanout";
+
+    String reviewsVoteUpdateExchange = "reviewsVoteUpdate_exchange";
+
     @Bean
     Queue products1Queue() {
-        return new Queue(reviews1Queue, false);
+        return new Queue(reviews1Queue, true);
     }
 
     /*@Bean
@@ -150,7 +156,7 @@ public class RabbitMQConfig {
 
     @Bean
     Queue productsDelete1Queue() {
-        return new Queue(reviewsDelete1Queue, false);
+        return new Queue(reviewsDelete1Queue, true);
     }
 
     /*@Bean
@@ -159,8 +165,13 @@ public class RabbitMQConfig {
     }*/
     @Bean
     Queue productsUpdate1Queue() {
-        return new Queue(reviewsUpdate1Queue, false);
+        return new Queue(reviewsUpdate1Queue, true);
     }
+    @Bean
+    Queue productsVoteUpdate1Queue() {
+        return new Queue(reviewsVoteUpdate1Queue, true);
+    }
+
 
     /*@Bean
     Queue products2Queue() {
@@ -179,6 +190,10 @@ public class RabbitMQConfig {
     @Bean
     public FanoutExchange exchangeUpdate() {
         return new FanoutExchange(reviewsUpdateExchange);
+    }
+    @Bean
+    public FanoutExchange exchangeVoteUpdate() {
+        return new FanoutExchange(reviewsVoteUpdateExchange);
     }
 
     @Bean
@@ -204,6 +219,11 @@ public class RabbitMQConfig {
     @Bean
     Binding deliveryBindingUpdate(Queue productsUpdate1Queue,@Qualifier("exchangeUpdate") FanoutExchange exchangeUpdate) {
         return BindingBuilder.bind(productsUpdate1Queue).to(exchangeUpdate);
+    }
+
+    @Bean
+    Binding deliveryBindingVoteUpdate(Queue productsVoteUpdate1Queue,@Qualifier("exchangeVoteUpdate") FanoutExchange exchangeVoteUpdate) {
+        return BindingBuilder.bind(productsVoteUpdate1Queue).to(exchangeVoteUpdate);
     }
 
     /*@Bean

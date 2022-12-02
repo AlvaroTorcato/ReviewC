@@ -29,27 +29,28 @@ public class ReviewService {
     @Autowired
     private ClientVotes clientVotes;
 
+    @Autowired
+    private ClientAuth clientAuth;
+
 
     public ReviewDTO createReview(final ReviewDetailsDTO resource, String sku, HttpServletRequest request) throws IOException {
         /*int statusCode = getStatusCodeOfProduct(sku);
         if (statusCode == 404){
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found");
-        }
+        }*/
         String jwt = service.parseJwt(request);
-        UserDetailsDTO user = service.makeRequestToAutentication(jwt);
+        UserDetailsDTO user = clientAuth.send(jwt);
 
         if (!user.getRoles().equals("[MODERATOR]") && !user.getRoles().equals("[COSTUMER]")){
             System.out.println(user.getRoles());
             throw  new ResponseStatusException(HttpStatus.FORBIDDEN, "Can´t be accessed by this user");
         }
-        */
         boolean n = client.send(sku);
         if (n == false){
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found");
         }
-        String jwt = service.parseJwt(request);
         System.out.println(n);
-        Review review = new Review(resource.getText(), resource.getRating(),sku,1);//user.getId());
+        Review review = new Review(resource.getText(), resource.getRating(),sku,user.getId());
         repository.save(review);
         rabbitMQSender.send(review);
         ReviewDTO reviewDTO = new ReviewDTO(review);
@@ -57,7 +58,7 @@ public class ReviewService {
     }
     public ReviewDTO changeStatus(int idReview, ChangeStatus resource, HttpServletRequest request) {
         String jwt = service.parseJwt(request);
-        UserDetailsDTO user = service.makeRequestToAutentication(jwt);
+        UserDetailsDTO user = clientAuth.send(jwt);
         if (!user.getRoles().equals("[MODERATOR]")){
             throw  new ResponseStatusException(HttpStatus.FORBIDDEN, "Can´t be accessed by this user");
         }
@@ -87,7 +88,7 @@ public class ReviewService {
 
     public void deleteById(int idReview,HttpServletRequest request){
         String jwt = service.parseJwt(request);
-        UserDetailsDTO user = service.makeRequestToAutentication(jwt);
+        UserDetailsDTO user = clientAuth.send(jwt);
         if (!user.getRoles().equals("[MODERATOR]") && !user.getRoles().equals("[COSTUMER]")){
             throw  new ResponseStatusException(HttpStatus.FORBIDDEN, "Can´t be accessed by this user");
         }
@@ -105,11 +106,7 @@ public class ReviewService {
     public ReviewDTO updateReviewWithVote(int reviewId, String status) {
         ReviewDTO review= repository.findReviewByIdAndApproved(reviewId);
         if (review == null){
-            review = service.retriveReviewFromApi(reviewId);
-            if (review == null){
-                throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found");
-            }
-            return service.updateReviewFromApi(reviewId,status);
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found");
         }
         else {
             int totalVotes = review.getTotalVotes();
@@ -123,6 +120,8 @@ public class ReviewService {
                 downVotes += 1;
             }
             repository.updateReviewWithVote(review.getId(),upVotes,downVotes,totalVotes);
+            Votes vote = new Votes(review.getId(),upVotes,downVotes,totalVotes);
+            rabbitMQSender.sendVoteUpdate(vote);
         }
         return repository.findReviewByIdAndApproved(reviewId);
     }

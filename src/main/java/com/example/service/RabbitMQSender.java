@@ -1,6 +1,7 @@
 package com.example.service;
 import com.example.model.Change;
 import com.example.model.Review;
+import com.example.model.Votes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -14,6 +15,7 @@ public class RabbitMQSender {
     public String exchange = "reviews_exchange";
     public String exchangeDelete = "reviewsDelete_exchange";
     public String exchangeUpdate = "reviewsUpdate_exchange";
+    public String exchangeVoteUpdate = "reviewsVoteUpdate_exchange";
     private static Logger logger = LogManager.getLogger(RabbitMQSender.class.toString());
     public void send(Review review){
         amqpTemplate.convertAndSend(exchange,"", review);
@@ -28,5 +30,10 @@ public class RabbitMQSender {
     public void sendUpdate(Change change){
         amqpTemplate.convertAndSend(exchangeUpdate,"", change);
         logger.info("Sending Message to the Queue : " + change);
+    }
+
+    public void sendVoteUpdate(Votes vote){
+        amqpTemplate.convertAndSend(exchangeVoteUpdate,"", vote);
+        logger.info("Sending Message to the Queue : " + vote);
     }
 }
