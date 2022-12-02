@@ -26,6 +26,9 @@ public class ReviewService {
     RabbitMQSender rabbitMQSender;
     @Autowired
     private Client client;
+    @Autowired
+    private ClientVotes clientVotes;
+
 
     public ReviewDTO createReview(final ReviewDetailsDTO resource, String sku, HttpServletRequest request) throws IOException {
         /*int statusCode = getStatusCodeOfProduct(sku);
@@ -60,6 +63,8 @@ public class ReviewService {
         }
         String updateString = resource.updateString();
         repository.updateReview(updateString,idReview);
+        Change change = new Change(idReview, updateString);
+        rabbitMQSender.sendUpdate(change);
         ReviewDTO reviewDTO = repository.findReviewById(idReview);
         return reviewDTO;
     }
@@ -87,11 +92,14 @@ public class ReviewService {
             throw  new ResponseStatusException(HttpStatus.FORBIDDEN, "Can´t be accessed by this user");
         }
         ReviewDTO review= findReviewById(idReview);
-        String urlRequest = "http://localhost:8083/votes/search/" + idReview;
-        int statusCode = service.getStatusOfRequest(urlRequest);
-        if (statusCode == 404 && review.getUserid() == user.getId()){
+        //String urlRequest = "http://localhost:8083/votes/search/" + idReview;
+        //int statusCode = service.getStatusOfRequest(urlRequest);
+        boolean find = clientVotes.send(idReview);
+        if (find == false && review.getUserid() == user.getId()){
             repository.deleteByIdReview(idReview);
+            rabbitMQSender.sendDelete(idReview);
         }
+        System.out.println(find);
     }
 
     public ReviewDTO updateReviewWithVote(int reviewId, String status) {

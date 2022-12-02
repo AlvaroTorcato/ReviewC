@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -125,6 +126,18 @@ public class RabbitMQConfig {
 
     String reviewsExchange = "reviews_exchange";
 
+    String reviewsDelete1Queue = "reviewsDelete1_queue_fanout";
+
+    //String products2Queue = "products2_queue_fanout";
+
+    String reviewsDeleteExchange = "reviewsDelete_exchange";
+
+    String reviewsUpdate1Queue = "reviewsUpdate1_queue_fanout";
+
+    //String products2Queue = "products2_queue_fanout";
+
+    String reviewsUpdateExchange = "reviewsUpdate_exchange";
+
     @Bean
     Queue products1Queue() {
         return new Queue(reviews1Queue, false);
@@ -136,13 +149,61 @@ public class RabbitMQConfig {
     }*/
 
     @Bean
+    Queue productsDelete1Queue() {
+        return new Queue(reviewsDelete1Queue, false);
+    }
+
+    /*@Bean
+    Queue products2Queue() {
+        return new Queue(products2Queue, false);
+    }*/
+    @Bean
+    Queue productsUpdate1Queue() {
+        return new Queue(reviewsUpdate1Queue, false);
+    }
+
+    /*@Bean
+    Queue products2Queue() {
+        return new Queue(products2Queue, false);
+    }*/
+
+    @Bean
     public FanoutExchange exchange() {
         return new FanoutExchange(reviewsExchange);
     }
+    @Bean
+    public FanoutExchange exchangeDelete() {
+        return new FanoutExchange(reviewsDeleteExchange);
+    }
 
     @Bean
-    Binding deliveryBinding(Queue products1Queue, FanoutExchange exchange) {
+    public FanoutExchange exchangeUpdate() {
+        return new FanoutExchange(reviewsUpdateExchange);
+    }
+
+    @Bean
+    Binding deliveryBinding(Queue products1Queue,@Qualifier("exchange") FanoutExchange exchange) {
         return BindingBuilder.bind(products1Queue).to(exchange);
+    }
+
+    /*@Bean
+    Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
+        return BindingBuilder.bind(products2Queue).to(exchange);
+    }*/
+
+    @Bean
+    Binding deliveryBindingDelete(Queue productsDelete1Queue,@Qualifier("exchangeDelete") FanoutExchange exchangeDelete) {
+        return BindingBuilder.bind(productsDelete1Queue).to(exchangeDelete);
+    }
+
+    /*@Bean
+    Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
+        return BindingBuilder.bind(products2Queue).to(exchange);
+    }*/
+
+    @Bean
+    Binding deliveryBindingUpdate(Queue productsUpdate1Queue,@Qualifier("exchangeUpdate") FanoutExchange exchangeUpdate) {
+        return BindingBuilder.bind(productsUpdate1Queue).to(exchangeUpdate);
     }
 
     /*@Bean
