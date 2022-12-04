@@ -13,6 +13,9 @@ public class Votes {
         this.totalVotes = totalVotes;
     }
 
+    public Votes() {
+    }
+
     public int getId() {
         return id;
     }

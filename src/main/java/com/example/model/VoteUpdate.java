@@ -8,6 +8,8 @@ public class VoteUpdate {
         this.id = id;
         setString(status);
     }
+    public VoteUpdate() {
+    }
 
     public int getId() {
         return id;
