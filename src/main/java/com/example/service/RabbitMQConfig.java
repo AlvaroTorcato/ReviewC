@@ -129,13 +129,14 @@ public class RabbitMQConfig {
 
     String reviews1Queue = "reviews1_queue_fanout";
 
-    //String products2Queue = "products2_queue_fanout";
+    String products2Queue = "reviews2_queue_fanout";
 
     String reviewsExchange = "reviews_exchange";
 
     String reviewsDelete1Queue = "reviewsDelete1_queue_fanout";
 
-    //String products2Queue = "products2_queue_fanout";
+    String reviewsDelete2Queue = "reviewsDelete2_queue_fanout";
+
 
     String reviewsDeleteExchange = "reviewsDelete_exchange";
 
@@ -156,14 +157,19 @@ public class RabbitMQConfig {
         return new Queue(reviews1Queue, true);
     }
 
-    /*@Bean
+    @Bean
     Queue products2Queue() {
         return new Queue(products2Queue, false);
-    }*/
+    }
 
     @Bean
     Queue productsDelete1Queue() {
         return new Queue(reviewsDelete1Queue, true);
+    }
+
+    @Bean
+    Queue productsDelete2Queue() {
+        return new Queue(reviewsDelete2Queue, true);
     }
 
     /*@Bean
@@ -208,16 +214,19 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(products1Queue).to(exchange);
     }
 
-    /*@Bean
+    @Bean
     Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
         return BindingBuilder.bind(products2Queue).to(exchange);
-    }*/
+    }
 
     @Bean
     Binding deliveryBindingDelete(Queue productsDelete1Queue,@Qualifier("exchangeDelete") FanoutExchange exchangeDelete) {
         return BindingBuilder.bind(productsDelete1Queue).to(exchangeDelete);
     }
-
+    @Bean
+    Binding deliveryBindingDelete1(Queue productsDelete2Queue,@Qualifier("exchangeDelete") FanoutExchange exchangeDelete) {
+        return BindingBuilder.bind(productsDelete2Queue).to(exchangeDelete);
+    }
     /*@Bean
     Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
         return BindingBuilder.bind(products2Queue).to(exchange);

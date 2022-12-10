@@ -2,8 +2,10 @@ package com.example.service;
 
 
 import com.example.model.Review;
+import com.example.model.Vote;
 import com.example.model.VoteUpdate;
 import com.example.repository.ReviewRepository;
+import com.example.repository.VoteRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -18,10 +20,16 @@ import org.springframework.stereotype.Component;
 public class RabbitMQReceiver {
     @Autowired
     ReviewService service;
+
+    @Autowired
+    VoteRepository repository;
     private static Logger logger = LogManager.getLogger(RabbitMQReceiver.class.toString());
     @RabbitHandler
-    public void receiver(VoteUpdate vote) {
-        service.updateReviewWithVote(vote.getId(), vote.getStatus());
+    public void receiver(Vote vote) {
+        repository.save(vote);
+        boolean n= vote.isVote();
+        String aux = vote.setString(n);
+        service.updateReviewWithVote(vote.getId(), aux);
         logger.info("MenuOrder listener invoked - Consuming Message with MenuOrder Identifier : " + vote);
     }
 }
