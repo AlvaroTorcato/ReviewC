@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 @EnableRabbit
 @Component
-@RabbitListener(queues = "authentications2_queue_fanout", id = "listener")
+@RabbitListener(queues = "authentications2_queue_fanout", id = "listener3")
 public class RabbitMQReceiverAuth {
     @Autowired
     JWTRepository repository;

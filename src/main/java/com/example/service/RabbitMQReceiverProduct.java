@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @EnableRabbit
 @Component
-@RabbitListener(queues = "products2_queue_fanout", id = "listener")
+@RabbitListener(queues = "products2_queue_fanout", id = "listener2")
 public class RabbitMQReceiverProduct {
     @Autowired
     ProductRepository repository;
