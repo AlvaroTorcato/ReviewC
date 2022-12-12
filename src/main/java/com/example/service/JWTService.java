@@ -44,7 +44,9 @@ public class JWTService {
         if (find == null){
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "JWT Not Found ");
         }
-        Claims claims = Jwts.parser().setSigningKey(secret)
+        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret),
+                SignatureAlgorithm.HS256.getJcaName());
+        Claims claims = Jwts.parser().setSigningKey(hmacKey)
                 .parseClaimsJws(jwt).getBody();
         UserDetailsDTO user = new UserDetailsDTO(
                 claims.get("id",Integer.class),
