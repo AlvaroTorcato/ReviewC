@@ -34,7 +34,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<ReviewDTO> findAllAprovedReviewsBySku(@Param("sku") String sku);
 
     @Query("select new com.example.model.ReviewDTO(f) from Review f where f.id = :reviewId and f.status = 'APPROVED'")
-    ReviewDTO findReviewByIdAndApproved(int reviewId);
+    ReviewDTO findReviewByIdAndApproved(@Param("reviewId")int reviewId);
     @Modifying
     @Query("delete from Review f where f.id = :idReview")
     void deleteByIdReview(@Param("idReview") int idReview);
