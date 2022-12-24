@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.model.*;
 import com.example.repository.ReviewRepository;
 import com.example.repository.VoteRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,11 +53,11 @@ public class ReviewService {
         }
         Review review = new Review(resource.getText(), resource.getRating(),sku,user.getId());
         repository.save(review);
-        rabbitMQSender.send(review);
+        rabbitMQSender.sendJsonMessage(review);
         ReviewDTO reviewDTO = new ReviewDTO(review);
         return reviewDTO;
     }
-    public ReviewDTO changeStatus(int idReview, ChangeStatus resource, HttpServletRequest request) {
+    public ReviewDTO changeStatus(int idReview, ChangeStatus resource, HttpServletRequest request) throws JsonProcessingException {
         String jwt = service.parseJwt(request);
         UserDetailsDTO user = serviceJWT.searchForUser(jwt);
         if (!user.getRoles().equals("[MODERATOR]")){
@@ -102,7 +103,7 @@ public class ReviewService {
         }
     }
 
-    public ReviewDTO updateReviewWithVote(int reviewId, String status) {
+    public ReviewDTO updateReviewWithVote(int reviewId, String status) throws JsonProcessingException {
         ReviewDTO review= repository.findReviewByIdAndApproved(reviewId);
         if (review == null){
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found");

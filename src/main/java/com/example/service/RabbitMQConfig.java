@@ -20,112 +20,66 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ErrorHandler;
 
-@EnableRabbit
+/*@EnableRabbit
 @Configuration
-@EnableAutoConfiguration(exclude = RabbitAutoConfiguration.class)
+@EnableAutoConfiguration(exclude = RabbitAutoConfiguration.class)*/
+@Configuration
 public class RabbitMQConfig {
+
+    @Bean
+    public FanoutExchange fanout () {
+        return new FanoutExchange("Rev");
+    }
+    @Bean
+    public FanoutExchange fanoutDelete () {
+        return new FanoutExchange("RevDel");
+    }
+    @Bean
+    public FanoutExchange fanoutUpdate () {
+        return new FanoutExchange("RevUpdate");
+    }
+    @Bean
+    public FanoutExchange fanoutVoteUpdate () {
+        return new FanoutExchange("RevVoteUpdate");
+    }
+    @Bean
+    public FanoutExchange fanoutAuth () {
+        return new FanoutExchange("Auth");
+    }
+    @Bean
+    public Queue autoDeleteQueueAuth() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding binding (FanoutExchange fanoutAuth, Queue autoDeleteQueueAuth){
+        return BindingBuilder.bind(autoDeleteQueueAuth).to(fanoutAuth);
+    }
+    @Bean
+    public FanoutExchange fanoutProduct () {
+        return new FanoutExchange("Pro");
+    }
+    @Bean
+    public Queue autoDeleteQueueProduct() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding bindingProduct (FanoutExchange fanoutProduct, Queue autoDeleteQueueProduct){
+        return BindingBuilder.bind(autoDeleteQueueProduct).to(fanoutProduct);
+    }
+    @Bean
+    public FanoutExchange fanoutVote () {
+        return new FanoutExchange("Vote");
+    }
+    @Bean
+    public Queue autoDeleteQueueVote() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding bindingVote (FanoutExchange fanoutVote, Queue autoDeleteQueueVote){
+        return BindingBuilder.bind(autoDeleteQueueVote).to(fanoutVote);
+    }
+
     /*
-    @Value("${rabbitmq.queue}")
-    private String queueName;
-    @Value("${rabbitmq.exchange}")
-    private String exchange;
-    @Value("${rabbitmq.routingkey}")
-    private String routingkey;
-    @Value("${rabbitmq.username}")
-    private String username;
-    @Value("${rabbitmq.password}")
-    private String password;
-    @Value("${rabbitmq.host}")
-    private String host;
-    @Value("${rabbitmq.virtualhost}")
-    private String virtualHost;
-    @Value("${rabbitmq.reply.timeout}")
-    private Integer replyTimeout;
-    @Bean
-    public Queue queue() {
-        return new Queue(queueName, false);
-    }
-    @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange(exchange);
-    }
-    @Bean
-    public Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingkey);
-    }
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return new Jackson2JsonMessageConverter(objectMapper);
-    }
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setVirtualHost(virtualHost);
-        connectionFactory.setHost(host);
-        connectionFactory.setUsername(username);
-        connectionFactory.setPassword(password);
-        return connectionFactory;
-    }
-    @Bean
-    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setDefaultReceiveQueue(queueName);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-        rabbitTemplate.setReplyAddress(queue().getName());
-        rabbitTemplate.setReplyTimeout(replyTimeout);
-        rabbitTemplate.setUseDirectReplyToContainer(false);
-        return rabbitTemplate;
-    }
-    @Bean
-    public AmqpAdmin amqpAdmin() {
-        return new RabbitAdmin(connectionFactory());
-    }
-    @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
-        final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory());
-        factory.setMessageConverter(jsonMessageConverter());
-        factory.setErrorHandler(errorHandler());
-        return factory;
-    }
-    @Bean
-    public ErrorHandler errorHandler() {
-        return new ConditionalRejectingErrorHandler(new MyFatalExceptionStrategy());
-    }
-    public static class MyFatalExceptionStrategy extends ConditionalRejectingErrorHandler.DefaultExceptionStrategy {
-        private final Logger logger = LogManager.getLogger(getClass());
-        @Override
-        public boolean isFatal(Throwable t) {
-            if (t instanceof ListenerExecutionFailedException) {
-                ListenerExecutionFailedException lefe = (ListenerExecutionFailedException) t;
-                logger.error("Failed to process inbound message from queue "
-                        + lefe.getFailedMessage().getMessageProperties().getConsumerQueue()
-                        + "; failed message: " + lefe.getFailedMessage(), t);
-            }
-            return super.isFatal(t);
-        }
-    }
-    @Bean
-    public FanoutExchange fanout() {
-        return new FanoutExchange("products.fanout");
-    }
-
-
-    @Bean
-    public RabbitMQSender sender() {
-        return new RabbitMQSender();
-    }
-
-    @Bean
-    public CachingConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory("localhost");
-    }
-
-    @Bean
-    public RabbitTemplate rabbitTemplate() {
-        return new RabbitTemplate(connectionFactory());
-    }*/
 
     String reviews1Queue = "reviews1_queue_fanout";
 
@@ -170,27 +124,27 @@ public class RabbitMQConfig {
     @Bean
     Queue productsDelete2Queue() {
         return new Queue(reviewsDelete2Queue, true);
-    }
+    }*/
 
     /*@Bean
     Queue products2Queue() {
         return new Queue(products2Queue, false);
     }*/
-    @Bean
+    /*@Bean
     Queue productsUpdate1Queue() {
         return new Queue(reviewsUpdate1Queue, true);
     }
     @Bean
     Queue productsVoteUpdate1Queue() {
         return new Queue(reviewsVoteUpdate1Queue, true);
-    }
+    }*/
 
 
     /*@Bean
     Queue products2Queue() {
         return new Queue(products2Queue, false);
     }*/
-
+/*
     @Bean
     public FanoutExchange exchange() {
         return new FanoutExchange(reviewsExchange);
@@ -226,12 +180,12 @@ public class RabbitMQConfig {
     @Bean
     Binding deliveryBindingDelete1(Queue productsDelete2Queue,@Qualifier("exchangeDelete") FanoutExchange exchangeDelete) {
         return BindingBuilder.bind(productsDelete2Queue).to(exchangeDelete);
-    }
+    }*/
     /*@Bean
     Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
         return BindingBuilder.bind(products2Queue).to(exchange);
     }*/
-
+/*
     @Bean
     Binding deliveryBindingUpdate(Queue productsUpdate1Queue,@Qualifier("exchangeUpdate") FanoutExchange exchangeUpdate) {
         return BindingBuilder.bind(productsUpdate1Queue).to(exchangeUpdate);
@@ -240,13 +194,13 @@ public class RabbitMQConfig {
     @Bean
     Binding deliveryBindingVoteUpdate(Queue productsVoteUpdate1Queue,@Qualifier("exchangeVoteUpdate") FanoutExchange exchangeVoteUpdate) {
         return BindingBuilder.bind(productsVoteUpdate1Queue).to(exchangeVoteUpdate);
-    }
+    }*/
 
     /*@Bean
     Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
         return BindingBuilder.bind(products2Queue).to(exchange);
     }*/
-
+/*
     @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
@@ -293,7 +247,7 @@ public class RabbitMQConfig {
     public MessageConverter jsonMessageConverter() {
         ObjectMapper objectMapper = new ObjectMapper();
         return new Jackson2JsonMessageConverter(objectMapper);
-    }
+    }*/
 }
 
 
