@@ -27,7 +27,7 @@ public class RabbitMQReceiverProduct {
         repository.save(product);
         logger.info("MenuOrder listener invoked - Consuming Message with MenuOrder Identifier : " + product.toString());
     }*/
-    @RabbitListener(queues= "#{autoDeleteQueueVote.name}")
+    @RabbitListener(queues= "#{autoDeleteQueueProduct.name}")
     public void consumeJsonMessage(String str)throws JsonProcessingException {
         logger.info("MenuOrder listener invoked - Consuming Message with MenuOrder Identifier : " + str);
 
