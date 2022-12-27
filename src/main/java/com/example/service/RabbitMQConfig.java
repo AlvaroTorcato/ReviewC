@@ -31,16 +31,48 @@ public class RabbitMQConfig {
         return new FanoutExchange("Rev");
     }
     @Bean
+    public Queue autoDeleteQueue() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding binding (FanoutExchange fanout, Queue autoDeleteQueue){
+        return BindingBuilder.bind(autoDeleteQueue).to(fanout);
+    }
+    @Bean
     public FanoutExchange fanoutDelete () {
         return new FanoutExchange("RevDel");
+    }
+    @Bean
+    public Queue autoDeleteQueueDelete() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding bindingDelete (FanoutExchange fanoutDelete, Queue autoDeleteQueueDelete){
+        return BindingBuilder.bind(autoDeleteQueueDelete).to(fanoutDelete);
     }
     @Bean
     public FanoutExchange fanoutUpdate () {
         return new FanoutExchange("RevUpdate");
     }
     @Bean
+    public Queue autoDeleteQueueUpdate() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding bindingUpdate (FanoutExchange fanoutUpdate, Queue autoDeleteQueueUpdate){
+        return BindingBuilder.bind(autoDeleteQueueUpdate).to(fanoutUpdate);
+    }
+    @Bean
     public FanoutExchange fanoutVoteUpdate () {
         return new FanoutExchange("RevVoteUpdate");
+    }
+    @Bean
+    public Queue autoDeleteQueueVoteUpdate() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding bindingVoteUpdate (FanoutExchange fanoutVoteUpdate, Queue autoDeleteQueueVoteUpdate){
+        return BindingBuilder.bind(autoDeleteQueueVoteUpdate).to(fanoutVoteUpdate);
     }
     @Bean
     public FanoutExchange fanoutAuth () {
@@ -51,7 +83,7 @@ public class RabbitMQConfig {
         return new AnonymousQueue();
     }
     @Bean
-    public Binding binding (FanoutExchange fanoutAuth, Queue autoDeleteQueueAuth){
+    public Binding bindingAuth (FanoutExchange fanoutAuth, Queue autoDeleteQueueAuth){
         return BindingBuilder.bind(autoDeleteQueueAuth).to(fanoutAuth);
     }
     @Bean
@@ -78,6 +110,7 @@ public class RabbitMQConfig {
     public Binding bindingVote (FanoutExchange fanoutVote, Queue autoDeleteQueueVote){
         return BindingBuilder.bind(autoDeleteQueueVote).to(fanoutVote);
     }
+
 
     /*
 

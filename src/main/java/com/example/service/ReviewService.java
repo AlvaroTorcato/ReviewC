@@ -57,6 +57,9 @@ public class ReviewService {
         ReviewDTO reviewDTO = new ReviewDTO(review);
         return reviewDTO;
     }
+    public void createReview(Review review) throws IOException {
+        if(repository.findReviewById(review.getId())==null) repository.save(review);
+    }
     public ReviewDTO changeStatus(int idReview, ChangeStatus resource, HttpServletRequest request) throws JsonProcessingException {
         String jwt = service.parseJwt(request);
         UserDetailsDTO user = serviceJWT.searchForUser(jwt);
@@ -70,6 +73,11 @@ public class ReviewService {
         ReviewDTO reviewDTO = repository.findReviewById(idReview);
         return reviewDTO;
     }
+
+    public void changeStatus(Change review) throws JsonProcessingException {
+        repository.updateReview(review.getStatus(),review.getId());
+    }
+
 
 
 
@@ -102,6 +110,12 @@ public class ReviewService {
             rabbitMQSender.sendDelete(idReview);
         }
     }
+    public void deleteById(int reviewId){
+
+        if (repository.findReviewById(reviewId)==null ){
+            repository.deleteByIdReview(reviewId);
+        }
+    }
 
     public ReviewDTO updateReviewWithVote(int reviewId, String status) throws JsonProcessingException {
         ReviewDTO review= repository.findReviewByIdAndApproved(reviewId);
@@ -124,6 +138,19 @@ public class ReviewService {
             rabbitMQSender.sendVoteUpdate(vote);
         }
         return repository.findReviewByIdAndApproved(reviewId);
+    }
+    public void updateReviewWithVote(Votes review) throws JsonProcessingException {
+        ReviewDTO reviewDTO= repository.findReviewByIdAndApproved(review.getId());
+        if (review == null){
+           // throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found");
+        }
+        else {
+            int totalVotes = review.getTotalVotes();
+            int upVotes = review.getUpVotes();
+            int downVotes = review.getDownVotes();
+
+            repository.updateReviewWithVote(review.getId(),upVotes,downVotes,totalVotes);
+        }
     }
 
 }
