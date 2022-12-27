@@ -58,7 +58,9 @@ public class ReviewService {
         return reviewDTO;
     }
     public void createReview(Review review) throws IOException {
-        if(repository.findReviewById(review.getId())==null) repository.save(review);
+        ReviewDTO rev=repository.findReviewById(review.getId());
+        System.out.println(rev);
+        if(rev==null) repository.save(review);
     }
     public ReviewDTO changeStatus(int idReview, ChangeStatus resource, HttpServletRequest request) throws JsonProcessingException {
         String jwt = service.parseJwt(request);

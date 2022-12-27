@@ -76,15 +76,6 @@ public class Review implements Serializable {
         return status;
     }
 
-    public void setStatus(ChangeStatus status) {
-        if (status.getApproved()){
-            this.status = "APPROVED";
-        }
-        else {
-            this.status = "REJECTED";
-        }
-
-    }
 
     public String getText() {
         return text;
@@ -207,5 +198,22 @@ public class Review implements Serializable {
     private Date getDate(){
         Date dNow = new Date();
         return dNow;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                ", text='" + text + '\'' +
+                ", rating=" + rating +
+                ", totalVotes=" + totalVotes +
+                ", upVotes=" + upVotes +
+                ", downVotes=" + downVotes +
+                ", creationDateTime=" + creationDateTime +
+                ", funFact='" + funFact + '\'' +
+                ", sku='" + sku + '\'' +
+                ", userid=" + userid +
+                '}';
     }
 }

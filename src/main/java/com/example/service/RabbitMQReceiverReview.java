@@ -34,8 +34,8 @@ public class RabbitMQReceiverReview {
 
         //jwtService.createJWT(obj);
 
-        //repository.save(obj);
-        service.createReview(obj);
+        repository.save(obj);
+        //service.createReview(obj);
     }
     /*@RabbitHandler
     public void receiver(Review review) {

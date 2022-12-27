@@ -4,6 +4,9 @@ public class Change {
     private int id;
     private String status;
 
+    public Change() {
+    }
+
     public Change(int id, String status) {
         this.id = id;
         this.status = status;
