@@ -56,7 +56,7 @@ public class RabbitMQConfig {
     }
     @Bean
     public FanoutExchange fanoutProduct () {
-        return new FanoutExchange("Pro");
+        return new FanoutExchange("Products");
     }
     @Bean
     public Queue autoDeleteQueueProduct() {
