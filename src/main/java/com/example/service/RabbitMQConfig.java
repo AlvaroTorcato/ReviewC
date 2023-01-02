@@ -38,6 +38,20 @@ public class RabbitMQConfig {
     public Binding binding (FanoutExchange fanout, Queue autoDeleteQueue){
         return BindingBuilder.bind(autoDeleteQueue).to(fanout);
     }
+
+    @Bean
+    public FanoutExchange fanoutRevVote () {
+        return new FanoutExchange("RevVote");
+    }
+    @Bean
+    public Queue autoDeleteQueueRevVote() {
+        return new AnonymousQueue();
+    }
+    @Bean
+    public Binding bindingRevVote (FanoutExchange fanoutRevVote, Queue autoDeleteQueueRevVote){
+        return BindingBuilder.bind(autoDeleteQueueRevVote).to(fanoutRevVote);
+    }
+
     @Bean
     public FanoutExchange fanoutDelete () {
         return new FanoutExchange("RevDel");
