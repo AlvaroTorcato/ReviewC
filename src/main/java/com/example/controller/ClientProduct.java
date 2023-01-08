@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.model.JWT;
+import com.example.model.Product;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ClientAuth {
+public class ClientProduct {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private DirectExchange exchange;
-    public List<JWT> send() {
+    private DirectExchange directExchangeProduct;
+    public List<Product> send() {
         int n= 0;
-        List<JWT> response = (List<JWT>) rabbitTemplate.convertSendAndReceive(exchange.getName(),"jwt", n);
+        List<Product> response = (List<Product>) rabbitTemplate.convertSendAndReceive(directExchangeProduct.getName(),"Product", n);
 
         System.out.println("Got " + response + "");
         return response;
