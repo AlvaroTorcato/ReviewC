@@ -127,6 +127,9 @@ public class ReviewService {
     public ReviewDTO updateReviewWithVote(int reviewId, String status) throws JsonProcessingException {
         ReviewDTO review= repository.findReviewByIdAndApproved(reviewId);
         if (review == null){
+            review=repository.findReviewById(reviewId);
+        }
+        if (review == null){
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found");
         }
         else {
@@ -144,7 +147,8 @@ public class ReviewService {
             Votes vote = new Votes(review.getId(),upVotes,downVotes,totalVotes);
             rabbitMQSender.sendVoteUpdate(vote);
         }
-        return repository.findReviewByIdAndApproved(reviewId);
+        //return repository.findReviewByIdAndApproved(reviewId);
+        return repository.findReviewById(reviewId);
     }
     public void updateReviewWithVote(Votes review) throws JsonProcessingException {
         ReviewDTO reviewDTO= repository.findReviewByIdAndApproved(review.getId());

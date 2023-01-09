@@ -19,6 +19,7 @@ public class RabbitMQSenderVote {
     public String exchange = "VoteRev2";
     private static Logger logger = LogManager.getLogger(RabbitMQSender.class.toString());
     public void send(Vote vote) throws JsonProcessingException {
+        vote.setId(0);
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String Json=ow.writeValueAsString(vote);
         rabbitTemplate.convertAndSend(exchange,"",Json);
