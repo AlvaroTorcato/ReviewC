@@ -30,6 +30,11 @@ public class RabbitMQConfig {
     public DirectExchange directExchangeProduct () {
         return new DirectExchange("product");
     }
+
+    @Bean
+    public DirectExchange directExchangeReview () {
+        return new DirectExchange("Review");
+    }
     @Bean
     public DirectExchange exchange() {
         return new DirectExchange("jwt");}
