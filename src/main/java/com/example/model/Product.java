@@ -2,9 +2,11 @@ package com.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -18,10 +20,6 @@ public class Product implements Serializable {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @ElementCollection
-    @CollectionTable(name = "images", joinColumns = @JoinColumn(name = "sku"))
-    @Column(name = "images")
-    private List<String> images;
 
 
     public Product() {
@@ -79,18 +77,6 @@ public class Product implements Serializable {
         }
         this.description = description;
     }
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
-    public void addImages(String string){
-        images.add(string);
-    }
-
     @Override
     public String toString() {
         return "Product{" +

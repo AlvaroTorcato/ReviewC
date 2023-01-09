@@ -68,6 +68,10 @@ public class Review implements Serializable {
         return id;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public void setId(int id) {
         this.id = id;
     }

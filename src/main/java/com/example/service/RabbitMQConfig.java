@@ -33,7 +33,7 @@ public class RabbitMQConfig {
 
     @Bean
     public DirectExchange directExchangeReview () {
-        return new DirectExchange("Review");
+        return new DirectExchange("review");
     }
     @Bean
     public DirectExchange exchange() {
