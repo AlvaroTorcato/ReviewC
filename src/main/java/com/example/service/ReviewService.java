@@ -60,7 +60,12 @@ public class ReviewService {
     public void createReview(Review review) throws IOException {
         ReviewDTO rev=repository.findReviewById(review.getId());
         System.out.println(rev);
-        if(rev==null) repository.save(review);
+        if(rev==null) {
+            repository.save(review);
+            rabbitMQSender.sendJsonMessage(review);
+            System.out.println(review.getId());
+        }
+
     }
     public ReviewDTO changeStatus(int idReview, ChangeStatus resource, HttpServletRequest request) throws JsonProcessingException {
         String jwt = service.parseJwt(request);

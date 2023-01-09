@@ -138,176 +138,19 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(autoDeleteQueueVote).to(fanoutVote);
     }
 
-
-    /*
-
-    String reviews1Queue = "reviews1_queue_fanout";
-
-    String products2Queue = "reviews2_queue_fanout";
-
-    String reviewsExchange = "reviews_exchange";
-
-    String reviewsDelete1Queue = "reviewsDelete1_queue_fanout";
-
-    String reviewsDelete2Queue = "reviewsDelete2_queue_fanout";
-
-
-    String reviewsDeleteExchange = "reviewsDelete_exchange";
-
-    String reviewsUpdate1Queue = "reviewsUpdate1_queue_fanout";
-
-    //String products2Queue = "products2_queue_fanout";
-
-    String reviewsUpdateExchange = "reviewsUpdate_exchange";
-
-    String reviewsVoteUpdate1Queue = "reviewsVoteUpdate1_queue_fanout";
-
-    //String products2Queue = "products2_queue_fanout";
-
-    String reviewsVoteUpdateExchange = "reviewsVoteUpdate_exchange";
-
     @Bean
-    Queue products1Queue() {
-        return new Queue(reviews1Queue, true);
-    }
-
-    @Bean
-    Queue products2Queue() {
-        return new Queue(products2Queue, false);
-    }
-
-    @Bean
-    Queue productsDelete1Queue() {
-        return new Queue(reviewsDelete1Queue, true);
-    }
-
-    @Bean
-    Queue productsDelete2Queue() {
-        return new Queue(reviewsDelete2Queue, true);
-    }*/
-
-    /*@Bean
-    Queue products2Queue() {
-        return new Queue(products2Queue, false);
-    }*/
-    /*@Bean
-    Queue productsUpdate1Queue() {
-        return new Queue(reviewsUpdate1Queue, true);
+    public FanoutExchange fanoutVoteRev2 () {
+        return new FanoutExchange("VoteRev2");
     }
     @Bean
-    Queue productsVoteUpdate1Queue() {
-        return new Queue(reviewsVoteUpdate1Queue, true);
-    }*/
-
-
-    /*@Bean
-    Queue products2Queue() {
-        return new Queue(products2Queue, false);
-    }*/
-/*
-    @Bean
-    public FanoutExchange exchange() {
-        return new FanoutExchange(reviewsExchange);
+    public Queue autoDeleteQueueVoteRev2() {
+        return new AnonymousQueue();
     }
     @Bean
-    public FanoutExchange exchangeDelete() {
-        return new FanoutExchange(reviewsDeleteExchange);
+    public Binding bindingVoteRev2 (FanoutExchange fanoutVoteRev2, Queue autoDeleteQueueVoteRev2){
+        return BindingBuilder.bind(autoDeleteQueueVoteRev2).to(fanoutVoteRev2);
     }
 
-    @Bean
-    public FanoutExchange exchangeUpdate() {
-        return new FanoutExchange(reviewsUpdateExchange);
-    }
-    @Bean
-    public FanoutExchange exchangeVoteUpdate() {
-        return new FanoutExchange(reviewsVoteUpdateExchange);
-    }
-
-    @Bean
-    Binding deliveryBinding(Queue products1Queue,@Qualifier("exchange") FanoutExchange exchange) {
-        return BindingBuilder.bind(products1Queue).to(exchange);
-    }
-
-    @Bean
-    Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
-        return BindingBuilder.bind(products2Queue).to(exchange);
-    }
-
-    @Bean
-    Binding deliveryBindingDelete(Queue productsDelete1Queue,@Qualifier("exchangeDelete") FanoutExchange exchangeDelete) {
-        return BindingBuilder.bind(productsDelete1Queue).to(exchangeDelete);
-    }
-    @Bean
-    Binding deliveryBindingDelete1(Queue productsDelete2Queue,@Qualifier("exchangeDelete") FanoutExchange exchangeDelete) {
-        return BindingBuilder.bind(productsDelete2Queue).to(exchangeDelete);
-    }*/
-    /*@Bean
-    Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
-        return BindingBuilder.bind(products2Queue).to(exchange);
-    }*/
-/*
-    @Bean
-    Binding deliveryBindingUpdate(Queue productsUpdate1Queue,@Qualifier("exchangeUpdate") FanoutExchange exchangeUpdate) {
-        return BindingBuilder.bind(productsUpdate1Queue).to(exchangeUpdate);
-    }
-
-    @Bean
-    Binding deliveryBindingVoteUpdate(Queue productsVoteUpdate1Queue,@Qualifier("exchangeVoteUpdate") FanoutExchange exchangeVoteUpdate) {
-        return BindingBuilder.bind(productsVoteUpdate1Queue).to(exchangeVoteUpdate);
-    }*/
-
-    /*@Bean
-    Binding emailBinding(Queue products2Queue, FanoutExchange exchange) {
-        return BindingBuilder.bind(products2Queue).to(exchange);
-    }*/
-/*
-    @Bean
-    public MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
-
-    @Bean
-    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(messageConverter());
-        return rabbitTemplate;
-    }
-
-    @Bean
-    ConnectionFactory connectionFactory() {
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost");
-        return cachingConnectionFactory;
-   }
-    @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
-        final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory());
-        factory.setMessageConverter(jsonMessageConverter());
-        factory.setErrorHandler(errorHandler());
-        return factory;
-    }
-    @Bean
-    public ErrorHandler errorHandler() {
-        return new ConditionalRejectingErrorHandler(new MyFatalExceptionStrategy());
-    }
-    public static class MyFatalExceptionStrategy extends ConditionalRejectingErrorHandler.DefaultExceptionStrategy {
-        private final Logger logger = LogManager.getLogger(getClass());
-        @Override
-        public boolean isFatal(Throwable t) {
-            if (t instanceof ListenerExecutionFailedException) {
-                ListenerExecutionFailedException lefe = (ListenerExecutionFailedException) t;
-                logger.error("Failed to process inbound message from queue "
-                        + lefe.getFailedMessage().getMessageProperties().getConsumerQueue()
-                        + "; failed message: " + lefe.getFailedMessage(), t);
-            }
-            return super.isFatal(t);
-        }
-    }
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return new Jackson2JsonMessageConverter(objectMapper);
-    }*/
 }
 
 

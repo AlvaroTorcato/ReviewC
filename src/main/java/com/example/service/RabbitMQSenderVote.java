@@ -16,7 +16,7 @@ public class RabbitMQSenderVote {
     private RabbitTemplate rabbitTemplate;
     //private AmqpTemplate amqpTemplate;
 
-    public String exchange = "Vote";
+    public String exchange = "VoteRev2";
     private static Logger logger = LogManager.getLogger(RabbitMQSender.class.toString());
     public void send(Vote vote) throws JsonProcessingException {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
